@@ -1,20 +1,23 @@
-//the id is getting from the URL with hook called useParams
+import {useEffect, useState} from 'react';
 import {useParams} from 'react-router-dom';
-// fake temporary data
-import products from '../products';
-//for back link (Go back button)
 import {Link} from 'react-router-dom';
 import {Row,Col,Image,ListGroup,Card, Button, ListGroupItem} from 'react-bootstrap';
-import Rating from '../components/Rating'; //Rating component with stars
+import Rating from '../components/Rating';
+import axios from 'axios'; 
 
-function ProductScreen() {
-    //getting the ID from URL and rename it to productId
+
+function ProductScreen () {
     const {id : productId}=useParams();
-    //fining the right product in an array
-    //where thr product's ID is the same as the ID in the URL
-    const product =products.find(
-        (p)=>p._id === productId
-    );
+    const [product, setProduct]=useState({});//state
+
+  
+    useEffect(()=>{
+        const fetchProduct = async () => {
+            const { data } = await axios.get(`/api/products/${productId}`);
+            setProduct(data);
+        }
+        fetchProduct();
+    },[productId])//if product Id changes, we want this to run
     
   return (
     <>
